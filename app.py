@@ -119,7 +119,8 @@ LAB_DATA = {
         "validationBenign": int(len(y_validation) - y_validation.sum()),
         "split": "60% train / 20% validation / 20% test",
         "randomState": RANDOM_STATE,
-        "source": "scikit-learn built-in benchmark dataset",
+        "source": "UCI Machine Learning Repository; loaded via scikit-learn",
+        "caseIdNote": "VAL-### are generated display labels, not source record IDs",
     },
     "model": {
         "name": "Logistic Regression",
