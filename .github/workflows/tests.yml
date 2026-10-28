@@ -23,3 +23,14 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Run regression tests
         run: python -m unittest discover -s tests -v
+      - name: Package the exact tested repository version
+        run: |
+          mkdir -p dist
+          zip -r dist/VESIT_ML_Classification_Threshold_Virtual_Lab.zip app.py index.html README.md requirements.txt render.yaml .gitignore tests .github -x '*__pycache__*' '*.pyc'
+      - name: Upload runnable project ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: VESIT-ML-Classification-Threshold-Virtual-Lab
+          path: dist/VESIT_ML_Classification_Threshold_Virtual_Lab.zip
+          if-no-files-found: error
+          retention-days: 30
