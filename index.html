@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>ML Lab | Classification Threshold Tuning</title>
+<style>
+:root{--bg:#0b1220;--panel:#121d2e;--panel2:#172438;--line:#29384f;--text:#eaf1fb;--muted:#9eafc5;--cyan:#63d8e6;--blue:#78a7ff;--green:#67d5a2;--amber:#f5c36b;--red:#ff7f89;--radius:18px;--shadow:0 14px 36px rgba(0,0,0,.18)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 12% -12%,#1a3653 0,transparent 36%),var(--bg);color:var(--text);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer}a{color:var(--cyan)}.shell{max-width:1240px;margin:auto;padding:28px 24px 54px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:12px;font-weight:750;letter-spacing:.01em}.brand-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;color:#08131e;background:linear-gradient(135deg,var(--cyan),var(--blue));font-size:20px;font-weight:900}.eyebrow{color:var(--cyan);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:800}.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(18,29,46,.75);padding:7px 12px;border-radius:999px;color:var(--muted);font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px #67d5a277}.hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.75fr);gap:22px;align-items:stretch;margin-bottom:22px}.hero-copy,.hero-card,.panel,.metric,.stat-card{background:linear-gradient(145deg,rgba(21,34,53,.96),rgba(15,25,40,.98));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.hero-copy{padding:30px}.hero h1{font-size:clamp(30px,4vw,49px);line-height:1.1;letter-spacing:-.04em;margin:12px 0}.hero h1 span{color:var(--cyan)}.lead{max-width:720px;color:#b8c8dc;font-size:16px;margin:14px 0 20px}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{font-size:12px;color:#c3d4e8;border:1px solid #344761;background:#1b2a40;padding:6px 10px;border-radius:9px}.hero-card{padding:23px;display:flex;flex-direction:column;justify-content:space-between;gap:20px}.hero-card h3{margin:0;font-size:17px}.hero-card p{margin:7px 0 0;color:var(--muted);font-size:13px}.big-value{font-size:38px;font-weight:800;letter-spacing:-.04em;color:var(--cyan)}.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.mini-grid div{border-top:1px solid var(--line);padding-top:11px}.mini-grid b{display:block;font-size:18px}.mini-grid span{color:var(--muted);font-size:11px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:14px;margin:30px 2px 13px}.section-head h2{font-size:21px;letter-spacing:-.025em;margin:3px 0 0}.section-head p{color:var(--muted);font-size:13px;margin:3px 0 0}.workspace{display:grid;grid-template-columns:minmax(280px,.82fr) minmax(0,1.55fr);gap:16px}.panel{padding:22px;min-width:0}.panel h3{font-size:16px;margin:0 0 5px}.sub{color:var(--muted);font-size:13px;margin:0 0 18px}.threshold-row{display:flex;justify-content:space-between;align-items:center;gap:10px}.threshold-number{font-size:32px;line-height:1.2;font-weight:800;letter-spacing:-.035em;color:var(--cyan)}input[type=range]{width:100%;accent-color:var(--cyan);margin:19px 0 10px;cursor:pointer}.range-ends{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}.preset-row{display:flex;gap:8px;flex-wrap:wrap;margin:17px 0 22px}.btn{border:1px solid #405574;background:#1b2c43;color:#e5effd;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:700;transition:.15s}.btn:hover{border-color:var(--cyan);transform:translateY(-1px)}.btn.primary{background:var(--cyan);color:#08202a;border-color:transparent}.btn.ghost{background:transparent}.btn.active{outline:2px solid var(--cyan);outline-offset:1px}.decision-box{border:1px solid #345268;background:#112b3b;border-radius:13px;padding:14px;margin-top:8px}.decision-box strong{display:block;color:var(--cyan);font-size:14px;margin-bottom:4px}.decision-box p{color:#bdd0e1;font-size:12px;margin:0}.metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:0 0 16px}.metric{padding:14px 15px;box-shadow:none;background:#101b2b;border-radius:13px}.metric .label{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}.metric .value{font-size:26px;font-weight:800;letter-spacing:-.035em;margin-top:5px}.metric .desc{font-size:11px;color:#8195ad;margin-top:1px}.metric.primary-metric .value{color:var(--cyan)}.cm-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(145px,.72fr);gap:18px;align-items:center}.cm{display:grid;grid-template-columns:28px repeat(2,minmax(0,1fr));grid-template-rows:26px repeat(2,82px);gap:6px}.cm-label{font-size:10px;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center}.cm-cell{border:1px solid #31455f;border-radius:11px;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#1b3045;min-width:0}.cm-cell b{font-size:24px;line-height:1.3}.cm-cell small{font-size:10px;color:#c0d2e7;text-align:center}.cm-cell.tp{background:#164a48;border-color:#26736b}.cm-cell.tn{background:#1d4055;border-color:#2e6078}.cm-cell.fp{background:#47352b;border-color:#80603c}.cm-cell.fn{background:#502e3c;border-color:#86495a}.cm-legend{display:flex;flex-direction:column;gap:12px}.legend-item{display:flex;gap:9px;font-size:12px;color:var(--muted)}.swatch{width:9px;height:9px;border-radius:3px;margin-top:4px;flex:none}.legend-item b{display:block;color:var(--text);font-size:13px}.barline{height:7px;border-radius:8px;background:#24354b;overflow:hidden;margin-top:8px}.barline span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:8px;transition:width .2s}.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.note{border:1px solid var(--line);border-radius:13px;padding:15px;background:#101b2b}.note .symbol{font-size:19px;margin-bottom:6px}.note b{display:block;font-size:13px;margin-bottom:4px}.note p{color:var(--muted);font-size:12px;margin:0}.comparison{width:100%;border-collapse:collapse;font-size:12px}.comparison th,.comparison td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line)}.comparison th{color:var(--muted);font-weight:650}.comparison td:not(:first-child),.comparison th:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}.comparison tr:last-child td{border-bottom:0}.comparison .current td{color:var(--cyan);font-weight:750}.cases-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.case-list{max-height:330px;overflow:auto;border:1px solid var(--line);border-radius:12px}.case-row{display:grid;grid-template-columns:84px 1fr 96px 94px;gap:9px;align-items:center;padding:10px 12px;border-bottom:1px solid #25344a;font-size:12px}.case-row:last-child{border-bottom:0}.case-row.head{background:#1b2a3e;color:var(--muted);position:sticky;top:0;z-index:1;font-size:10px;text-transform:uppercase;letter-spacing:.05em}.case-id{font-weight:750}.prob-track{height:6px;background:#27374c;border-radius:8px;overflow:hidden;margin-top:5px}.prob-track span{display:block;height:100%;background:var(--cyan);border-radius:8px}.status{display:inline-flex;justify-content:center;border-radius:7px;padding:4px 6px;font-size:10px;font-weight:750}.status.good{color:#9af0c5;background:#173b34}.status.bad{color:#ffb2b8;background:#462936}.status.neutral{color:#c4d3e6;background:#273649}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}.tab{padding:9px 13px;border-radius:10px;border:1px solid var(--line);background:#101b2b;color:#b7c8dd;font-size:12px;font-weight:700}.tab.active{background:#19364a;border-color:#39718a;color:var(--cyan)}.tab-content{display:none}.tab-content.active{display:block}.quiz-q{padding:14px 0;border-bottom:1px solid var(--line)}.quiz-q:last-child{border:0}.quiz-q p{font-weight:700;margin:0 0 9px;font-size:13px}.quiz-q button{margin:3px 5px 3px 0;text-align:left}.quiz-feedback{min-height:20px;color:var(--green);font-size:12px;margin-top:6px}.callout{border-left:3px solid var(--amber);padding:10px 13px;background:#30291d;border-radius:0 10px 10px 0;color:#e6d5b4;font-size:12px;margin-top:16px}.footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#8193aa;font-size:11px;margin-top:26px;border-top:1px solid var(--line);padding-top:17px}.error{display:none;border:1px solid #8a414d;background:#3d202b;padding:15px;border-radius:12px;color:#ffd1d6;margin:20px 0}
+@media(max-width:850px){.hero,.workspace{grid-template-columns:1fr}.hero-card{min-height:200px}.notes{grid-template-columns:1fr}.cm-layout{grid-template-columns:1fr}.cm-legend{display:grid;grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.shell{padding:16px 12px 36px}.topbar{align-items:flex-start}.topbar .pill{max-width:150px;font-size:10px}.hero-copy,.hero-card,.panel{padding:17px}.hero h1{font-size:32px}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.metric .value{font-size:23px}.cm{grid-template-rows:25px repeat(2,70px);grid-template-columns:25px repeat(2,minmax(0,1fr))}.cm-cell b{font-size:21px}.case-row{grid-template-columns:69px 1fr 73px 75px;gap:5px;padding:9px 7px;font-size:10px}.case-row.head{font-size:8px}.mini-grid{gap:6px}.mini-grid b{font-size:16px}.section-head{align-items:start;flex-direction:column}}
+.student-strip{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:0 0 18px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(16,27,43,.8);color:var(--muted);font-size:12px}.student-strip span{white-space:nowrap}.student-strip b{color:var(--text);margin-right:5px}@media(max-width:560px){.student-strip{gap:7px 12px;font-size:11px}.student-strip span{white-space:normal}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">ML</div><div><div class="eyebrow">VESIT · Machine Learning</div><div>Interactive Virtual Lab</div></div></div>
+    <div class="pill"><span class="dot"></span><span id="status-text">Loading trained model…</span></div>
+  </header>
+
+  <div class="student-strip" aria-label="Student and assessment details"><span><b>Student</b> Sahil Mirchandani</span><span><b>Roll No.</b> 37</span><span><b>Class</b> D12A</span><span><b>Branch</b> CMPN</span><span><b>Year</b> T.E. (Third Year)</span><span><b>Batch</b> A</span></div>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow">Experiment 01 · Supervised Learning</div>
+      <h1>Classification <span>Threshold</span> Tuning</h1>
+      <p class="lead">See how one slider changes a Logistic Regression model’s decisions. Explore the trade-off between catching malignant cases and incorrectly flagging benign cases.</p>
+      <div class="chips"><span class="chip">Logistic Regression</span><span class="chip">Confusion Matrix</span><span class="chip">Precision &amp; Recall</span><span class="chip">ROC-AUC</span></div>
+    </div>
+    <aside class="hero-card">
+      <div><div class="eyebrow">Your experiment dataset</div><h3 id="dataset-name">Breast Cancer Wisconsin (Diagnostic)</h3><p>Public benchmark dataset included with scikit-learn. No personal or patient data is entered.</p></div>
+      <div><div class="big-value" id="sample-count">569</div><div style="color:var(--muted);font-size:12px">samples · 30 numerical features</div></div>
+      <div class="mini-grid"><div><b id="train-count">341</b><span>Training rows</span></div><div><b id="validation-count">114</b><span>Validation rows</span></div><div><b id="test-count">114</b><span>Final test rows</span></div></div>
+    </aside>
+  </section>
+
+  <section>
+    <div class="section-head"><div><div class="eyebrow">Experiment brief</div><h2>Understand the concept before running it</h2><p>A focused experiment aligned with supervised learning and classification evaluation.</p></div></div>
+    <div class="notes">
+      <div class="note"><div class="symbol">🎯</div><b>Aim</b><p>Study how a Logistic Regression classification threshold changes predictions and the trade-off between precision and recall.</p></div>
+      <div class="note"><div class="symbol">🧪</div><b>Objectives</b><p>Interpret the confusion matrix; calculate classification metrics; compare thresholds on the validation set; explain false positives and false negatives.</p></div>
+      <div class="note"><div class="symbol">🛠️</div><b>Tools &amp; method</b><p>Python, scikit-learn, Logistic Regression, StandardScaler and the built-in Breast Cancer Wisconsin benchmark dataset. A stratified 60/20/20 training, validation and final test split is used.</p></div>
+    </div>
+  </section>
+
+  <div class="error" id="error-box">The trained model data could not be loaded. Refresh the page or check the server logs.</div>
+  <section>
+    <div class="section-head"><div><div class="eyebrow">01 / Experiment controls</div><h2>Change the decision threshold</h2><p>The slider updates validation metrics only; use the final test once after freezing a threshold.</p></div><button class="btn ghost" id="reset-btn">↺ Reset experiment</button></div>
+    <div class="workspace">
+      <div class="panel">
+        <h3>Prediction threshold</h3><p class="sub">A case is classified as malignant when its predicted malignant probability is at least the selected threshold.</p>
+        <div class="threshold-row"><span style="color:var(--muted);font-size:12px">Selected threshold</span><output id="threshold-output" class="threshold-number">0.50</output></div>
+        <input id="threshold-slider" type="range" min="0.05" max="0.95" step="0.01" value="0.50" aria-label="Classification threshold">
+        <div class="range-ends"><span>0.05 · More sensitive</span><span>0.95 · More strict</span></div>
+        <div class="preset-row"><button class="btn preset" data-threshold="0.25">Lower · 0.25</button><button class="btn preset active" data-threshold="0.50">Default · 0.50</button><button class="btn preset" data-threshold="0.75">Higher · 0.75</button></div>
+        <div class="decision-box"><strong id="decision-title">Balanced starting point</strong><p id="decision-copy">At 0.50, predicted probabilities of 50% or more count as positive (malignant). Lowering the threshold usually catches more malignant cases but may also increase false alarms.</p></div><button class="btn primary" id="test-eval-btn" style="width:100%;margin-top:15px">Freeze threshold &amp; evaluate final test set</button><p style="color:var(--muted);font-size:11px;margin:8px 0 0">This freezes your selected threshold so the separate test set is not used to keep tuning it.</p>
+        <div style="margin-top:20px"><div class="threshold-row"><span style="font-size:12px">Malignant cases detected</span><b id="detected-count">—</b></div><div class="barline"><span id="detected-bar"></span></div><div class="threshold-row" style="margin-top:14px"><span style="font-size:12px">Benign cases correctly cleared</span><b id="benign-count">—</b></div><div class="barline"><span id="benign-bar"></span></div></div>
+        <div class="callout"><b>Important:</b> This is a learning demonstration, not a medical diagnostic tool. Model output must never replace professional medical evaluation.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Live validation results</h3><p class="sub">Use this validation set to explore thresholds before a final test evaluation.</p>
+        <div class="metric-grid">
+          <div class="metric primary-metric"><div class="label">Accuracy</div><div class="value" id="accuracy">—</div><div class="desc">Overall correct</div></div>
+          <div class="metric"><div class="label">Precision</div><div class="value" id="precision">—</div><div class="desc">Correct positive predictions</div></div>
+          <div class="metric"><div class="label">Recall / Sensitivity</div><div class="value" id="recall">—</div><div class="desc">Malignant cases caught</div></div>
+          <div class="metric"><div class="label">F1-score</div><div class="value" id="f1">—</div><div class="desc">Precision–recall balance</div></div>
+          <div class="metric"><div class="label">Specificity</div><div class="value" id="specificity">—</div><div class="desc">Benign cases correctly cleared</div></div>
+          <div class="metric"><div class="label">ROC-AUC</div><div class="value" id="auc">—</div><div class="desc">Ranking quality (0–1 scale)</div></div>
+        </div>
+        <div class="section-head" style="margin:20px 0 12px"><div><h2 style="font-size:16px">Validation confusion matrix</h2><p>Positive class = malignant</p></div></div>
+        <div class="cm-layout">
+          <div class="cm" role="img" aria-label="Confusion matrix with actual rows and predicted columns">
+            <div></div><div class="cm-label">Predicted<br>malignant</div><div class="cm-label">Predicted<br>benign</div>
+            <div class="cm-label">Actual<br>malignant</div><div class="cm-cell tp"><b id="tp">—</b><small>True positive</small></div><div class="cm-cell fn"><b id="fn">—</b><small>False negative</small></div>
+            <div class="cm-label">Actual<br>benign</div><div class="cm-cell fp"><b id="fp">—</b><small>False positive</small></div><div class="cm-cell tn"><b id="tn">—</b><small>True negative</small></div>
+          </div>
+          <div class="cm-legend">
+            <div class="legend-item"><span class="swatch" style="background:#3caa8e"></span><div><b>True positive (TP)</b>Malignant correctly detected.</div></div>
+            <div class="legend-item"><span class="swatch" style="background:#d66d7c"></span><div><b>False negative (FN)</b>Malignant incorrectly called benign.</div></div>
+            <div class="legend-item"><span class="swatch" style="background:#d39a50"></span><div><b>False positive (FP)</b>Benign incorrectly flagged malignant.</div></div>
+            <div class="legend-item"><span class="swatch" style="background:#5795b4"></span><div><b>True negative (TN)</b>Benign correctly identified.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="test-panel" style="display:none">
+    <div class="section-head"><div><div class="eyebrow">Final evaluation · One held-out test</div><h2>Frozen-threshold test results</h2><p id="test-summary-caption">The selected threshold is now evaluated on data not used for threshold exploration.</p></div><span class="pill"><span class="dot"></span>Threshold frozen</span></div>
+    <div class="panel">
+      <div class="metric-grid">
+        <div class="metric primary-metric"><div class="label">Test accuracy</div><div class="value" id="test-accuracy">—</div><div class="desc">Overall correct</div></div>
+        <div class="metric"><div class="label">Test precision</div><div class="value" id="test-precision">—</div><div class="desc">Positive prediction reliability</div></div>
+        <div class="metric"><div class="label">Test recall</div><div class="value" id="test-recall">—</div><div class="desc">Malignant cases detected</div></div>
+        <div class="metric"><div class="label">Test F1-score</div><div class="value" id="test-f1">—</div><div class="desc">Precision–recall balance</div></div>
+        <div class="metric"><div class="label">Test specificity</div><div class="value" id="test-specificity">—</div><div class="desc">Benign cases correctly cleared</div></div>
+        <div class="metric"><div class="label">Test ROC-AUC</div><div class="value" id="test-auc">—</div><div class="desc">Ranking quality (0–1 scale)</div></div>
+      </div>
+      <div class="cm-layout">
+        <div class="cm" role="img" aria-label="Final test-set confusion matrix">
+          <div></div><div class="cm-label">Predicted<br>malignant</div><div class="cm-label">Predicted<br>benign</div>
+          <div class="cm-label">Actual<br>malignant</div><div class="cm-cell tp"><b id="test-tp">—</b><small>True positive</small></div><div class="cm-cell fn"><b id="test-fn">—</b><small>False negative</small></div>
+          <div class="cm-label">Actual<br>benign</div><div class="cm-cell fp"><b id="test-fp">—</b><small>False positive</small></div><div class="cm-cell tn"><b id="test-tn">—</b><small>True negative</small></div>
+        </div>
+        <div class="decision-box"><strong>Why this second step matters</strong><p>You selected the threshold using validation data first. These final test metrics estimate how that choice performs on separate, previously unseen examples. Avoid changing the threshold based on these test results in a real evaluation.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><div><div class="eyebrow">02 / Observe the trade-off</div><h2>What changed at this threshold?</h2><p>Use these prompts to interpret the numbers rather than chasing only the highest accuracy.</p></div></div>
+    <div class="notes">
+      <div class="note"><div class="symbol">🎯</div><b>Recall matters when missing positives is costly</b><p id="recall-insight">Lower thresholds generally flag more cases as positive, helping reduce false negatives.</p></div>
+      <div class="note"><div class="symbol">🔎</div><b>Precision reflects positive-prediction reliability</b><p id="precision-insight">As more cases are flagged positive, some additional flags may be false positives.</p></div>
+      <div class="note"><div class="symbol">⚖️</div><b>Choose using the problem's costs</b><p id="tradeoff-insight">A threshold is a decision setting, not a universal measure of model quality.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><div><div class="eyebrow">03 / Compare runs</div><h2>Compare common thresholds</h2><p>Same trained model and test data; only the decision threshold changes.</p></div><button class="btn ghost" id="export-btn">↓ Export current results CSV</button></div>
+    <div class="panel" style="overflow-x:auto">
+      <table class="comparison"><thead><tr><th>Threshold</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1-score</th><th>FN</th><th>FP</th></tr></thead><tbody id="compare-body"></tbody></table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><div><div class="eyebrow">04 / Inspect examples</div><h2>Validation-case explorer</h2><p>Browse validation examples to understand how the selected threshold changes individual predictions before the final test.</p></div></div>
+    <div class="panel">
+      <div class="cases-tools"><button class="btn active" data-filter="all">All cases</button><button class="btn" data-filter="wrong">Misclassified only</button><button class="btn" data-filter="positive">Predicted malignant</button><span style="color:var(--muted);font-size:11px;margin-left:auto" id="case-count">—</span></div>
+      <div class="case-list" id="case-list"><div class="case-row head"><span>Validation ID</span><span>Malignant probability</span><span>Actual class</span><span>Prediction</span></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><div><div class="eyebrow">05 / Learn &amp; check</div><h2>Concept notes and viva practice</h2><p>Use these short definitions to explain the experiment.</p></div></div>
+    <div class="panel">
+      <div class="tabs" role="tablist"><button class="tab active" data-tab="concepts">Key concepts</button><button class="tab" data-tab="viva">Viva check</button><button class="tab" data-tab="procedure">Experiment procedure</button></div>
+      <div class="tab-content active" id="concepts">
+        <div class="notes">
+          <div class="note"><b>Decision threshold</b><p>Probability cut-off used to convert model scores into class labels. A threshold of 0.50 is common, but not always optimal.</p></div>
+          <div class="note"><b>Precision</b><p>TP / (TP + FP). Of all cases predicted positive, what fraction were actually positive?</p></div>
+          <div class="note"><b>Recall (sensitivity)</b><p>TP / (TP + FN). Of all actual positive cases, what fraction did the model detect?</p></div>
+          <div class="note"><b>F1-score</b><p>2 × (Precision × Recall) / (Precision + Recall). The harmonic mean of precision and recall.</p></div>
+          <div class="note"><b>Specificity</b><p>TN / (TN + FP). Of all actual negative cases, what fraction were correctly identified?</p></div>
+          <div class="note"><b>ROC-AUC</b><p>Measures how well the model ranks positive cases above negative cases across thresholds; it does not change just because the decision cut-off changes.</p></div>
+        </div>
+      </div>
+      <div class="tab-content" id="viva">
+        <div class="quiz-q"><p>1. What happens when the threshold is lowered?</p><button class="btn" data-answer="wrong" data-q="q1">Every metric always improves</button><button class="btn" data-answer="right" data-q="q1">More cases are predicted positive; recall often rises while false positives may rise</button><button class="btn" data-answer="wrong" data-q="q1">ROC-AUC automatically increases</button><div class="quiz-feedback" id="q1"></div></div>
+        <div class="quiz-q"><p>2. Which formula represents recall?</p><button class="btn" data-answer="wrong" data-q="q2">TP / (TP + FP)</button><button class="btn" data-answer="right" data-q="q2">TP / (TP + FN)</button><button class="btn" data-answer="wrong" data-q="q2">(TP + TN) / Total</button><div class="quiz-feedback" id="q2"></div></div>
+        <div class="quiz-q"><p>3. Why does ROC-AUC stay the same as the slider moves?</p><button class="btn" data-answer="right" data-q="q3">It evaluates ranking across thresholds, not one selected cut-off</button><button class="btn" data-answer="wrong" data-q="q3">It is the same as accuracy</button><button class="btn" data-answer="wrong" data-q="q3">The model is retrained at each setting</button><div class="quiz-feedback" id="q3"></div></div>
+      </div>
+      <div class="tab-content" id="procedure">
+        <ol style="padding-left:21px;color:#c2d2e6;font-size:13px;line-height:1.9"><li>Load the Breast Cancer Wisconsin dataset and separate predictors from the malignant/benign target.</li><li>Create stratified training, validation and test subsets using a fixed random seed.</li><li>Standardize features and train Logistic Regression on the training set only.</li><li>Generate malignant-class probabilities for validation and test subsets.</li><li>Change the threshold to produce new validation predictions without retraining the model.</li><li>Compare validation confusion-matrix counts, accuracy, precision, recall, F1-score and specificity. ROC-AUC remains fixed as the threshold changes.</li><li>Explain which threshold might suit a scenario where false negatives are especially costly, while noting the trade-off.</li></ol>
+        <p style="color:var(--muted);font-size:12px;margin-bottom:0">Reproducibility: scikit-learn built-in dataset · random_state = 42 · stratified 60/20/20 train/validation/test split · standard scaling + Logistic Regression.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><div><div class="eyebrow">06 / Lab-record summary</div><h2>Inference and conclusion</h2><p>Use the live results above when writing the observation section of your lab record.</p></div></div>
+    <div class="notes">
+      <div class="note"><b>Inference</b><p>Changing the classification threshold changes the number of positive predictions, so precision, recall, specificity and the confusion-matrix counts can change even though the trained model stays the same. ROC-AUC stays constant because the underlying probability rankings remain unchanged.</p></div>
+      <div class="note"><b>Conclusion</b><p>The experiment demonstrates that 0.50 is not automatically the best threshold for every task. A suitable threshold depends on the relative cost of false negatives and false positives and should be selected using validation data, then assessed on held-out test data.</p></div>
+      <div class="note"><b>What to report</b><p>Record the selected threshold, TP, TN, FP, FN, accuracy, precision, recall, F1-score, specificity and ROC-AUC. Explain at least one trade-off you observed. Export the current run as CSV for further analysis.</p></div>
+    </div>
+  </section>
+
+  <footer class="footer"><span>ML Classification Threshold Tuning · Virtual Lab</span><span>Educational demonstration only · Not for clinical use</span></footer>
+</div>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  let data = null;
+  let filter = "all";
+  let lockedThreshold = null;
+  let testEvaluation = null;
+  const defaultThreshold = 0.50;
+  const fmt = x => Number.isFinite(x) ? (x*100).toFixed(1)+"%" : "—";
+  const ratio = (a,b) => b ? a/b : 0;
+  function calc(threshold, cases=data.cases){
+    let tp=0,tn=0,fp=0,fn=0;
+    for(const c of cases){
+      const pred = c.malignantProbability >= threshold ? 1 : 0;
+      if(c.actual===1 && pred===1) tp++;
+      else if(c.actual===0 && pred===0) tn++;
+      else if(c.actual===0 && pred===1) fp++;
+      else fn++;
+    }
+    const total=tp+tn+fp+fn, accuracy=ratio(tp+tn,total), precision=ratio(tp,tp+fp), recall=ratio(tp,tp+fn), specificity=ratio(tn,tn+fp);
+    const f1=(precision+recall) ? 2*precision*recall/(precision+recall) : 0;
+    return {threshold,tp,tn,fp,fn,total,accuracy,precision,recall,specificity,f1};
+  }
+  function setText(id,value){$(id).textContent=value;}
+  function renderMetrics(m){
+    setText("threshold-output",m.threshold.toFixed(2));
+    setText("accuracy",fmt(m.accuracy));setText("precision",fmt(m.precision));setText("recall",fmt(m.recall));
+    setText("f1",fmt(m.f1));setText("specificity",fmt(m.specificity));setText("auc",data.model.validationRocAuc.toFixed(3));
+    setText("tp",m.tp);setText("tn",m.tn);setText("fp",m.fp);setText("fn",m.fn);
+    const malignant=m.tp+m.fn, benign=m.tn+m.fp;
+    setText("detected-count",m.tp+" / "+malignant);
+    setText("benign-count",m.tn+" / "+benign);
+    $("detected-bar").style.width=fmt(m.recall);
+    $("benign-bar").style.width=fmt(m.specificity);
+    let title="Balanced starting point",copy="At 0.50, predicted probabilities of 50% or more count as positive (malignant). Compare the missed cases and false alarms as you move the slider.";
+    if(m.threshold<=0.35){title="Lower threshold · More sensitive";copy="A lower cut-off flags more cases as malignant. Check whether recall improves and how many benign cases become false positives."}
+    else if(m.threshold>=0.70){title="Higher threshold · More strict";copy="A higher cut-off requires stronger model confidence. It may reduce false alarms, but check whether more malignant cases are missed."}
+    setText("decision-title",title);setText("decision-copy",copy);
+    setText("recall-insight",m.fn===0?"No malignant cases were missed at this setting on this test split. Do not assume this will generalize to new data.":m.fn+" malignant case(s) were missed at this setting. Lower thresholds can reduce false negatives, often at the cost of additional false positives.");
+    setText("precision-insight",m.fp+" benign case(s) were incorrectly flagged malignant. Raising the threshold may reduce these false positives but may also miss more malignant cases.");
+    setText("tradeoff-insight","At this setting, "+m.tp+" of "+(m.tp+m.fn)+" malignant cases were detected and "+m.fp+" benign cases were flagged. Select thresholds based on the relative cost of each error.");
+  }
+  function renderCompare(current){
+    const thresholds=[0.25,0.50,0.75];
+    $("compare-body").innerHTML=thresholds.map(t=>{
+      const m=calc(t), cls=Math.abs(current.threshold-t)<0.001?"current":"";
+      return '<tr class="'+cls+'"><td>'+t.toFixed(2)+(cls?' · selected':'')+'</td><td>'+fmt(m.accuracy)+'</td><td>'+fmt(m.precision)+'</td><td>'+fmt(m.recall)+'</td><td>'+fmt(m.f1)+'</td><td>'+m.fn+'</td><td>'+m.fp+'</td></tr>';
+    }).join("");
+  }
+  function renderCases(m){
+    const arr=data.cases.map(c=>{
+      const pred=c.malignantProbability>=m.threshold?1:0;
+      return {...c,pred,correct:pred===c.actual};
+    }).filter(c=> filter==="wrong"?!c.correct:filter==="positive"?c.pred===1:true)
+      .sort((a,b)=>(a.correct-b.correct)||(b.malignantProbability-a.malignantProbability));
+    const head='<div class="case-row head"><span>Validation ID</span><span>Malignant probability</span><span>Actual class</span><span>Prediction</span></div>';
+    const rows=arr.map(c=>{
+      const prob=fmt(c.malignantProbability), actual=c.actual===1?"Malignant":"Benign", pred=c.pred===1?"Malignant":"Benign";
+      const status=c.correct?'<span class="status good">Correct</span>':'<span class="status bad">Incorrect</span>';
+      return '<div class="case-row"><span class="case-id">'+c.id+'</span><span>'+prob+'<div class="prob-track"><span style="width:'+Math.max(0,Math.min(100,c.malignantProbability*100))+'%"></span></div></span><span>'+actual+'</span><span>'+pred+' '+status+'</span></div>';
+    }).join("");
+    $("case-list").innerHTML=head+(rows||'<div style="padding:18px;color:var(--muted)">No cases match this filter at the current threshold.</div>');
+    setText("case-count",arr.length+" case(s)");
+  }
+  function renderTestEvaluation(m){
+    setText("test-accuracy",fmt(m.accuracy));setText("test-precision",fmt(m.precision));
+    setText("test-recall",fmt(m.recall));setText("test-f1",fmt(m.f1));
+    setText("test-specificity",fmt(m.specificity));setText("test-auc",m.rocAuc.toFixed(3));
+    setText("test-tp",m.tp);setText("test-tn",m.tn);setText("test-fp",m.fp);setText("test-fn",m.fn);
+    setText("test-summary-caption","Threshold "+m.threshold.toFixed(2)+" was frozen using validation results before evaluation on "+m.total+" separate test samples.");
+  }
+  function update(){
+    if(!data)return;
+    const threshold=Number($("threshold-slider").value);
+    const m=calc(threshold);
+    document.querySelectorAll(".preset").forEach(b=>b.classList.toggle("active",Math.abs(Number(b.dataset.threshold)-threshold)<0.001));
+    renderMetrics(m);renderCompare(m);renderCases(m);
+  }
+  async function freezeAndEvaluate(){
+    if(!data)return;
+    if(lockedThreshold!==null){
+      lockedThreshold=null;testEvaluation=null;
+      $("threshold-slider").disabled=false;
+      document.querySelectorAll(".preset").forEach(b=>b.disabled=false);
+      $("test-eval-btn").textContent="Freeze threshold & evaluate final test set";
+      $("test-panel").style.display="none";
+      setText("status-text","Trained model ready");
+      update();
+      return;
+    }
+    lockedThreshold=Number($("threshold-slider").value);
+    $("threshold-slider").disabled=true;
+    document.querySelectorAll(".preset").forEach(b=>b.disabled=true);
+    $("test-eval-btn").disabled=true;
+    $("test-eval-btn").textContent="Evaluating final test…";
+    try{
+      const response=await fetch("/api/evaluate-test",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({threshold:lockedThreshold})
+      });
+      if(!response.ok)throw new Error("Final test evaluation request failed ("+response.status+").");
+      testEvaluation=await response.json();
+      renderTestEvaluation(testEvaluation);
+      $("test-panel").style.display="block";
+      $("test-eval-btn").textContent="↻ Restart threshold experiment";
+      setText("status-text","Final test evaluated");
+      $("test-panel").scrollIntoView({behavior:"smooth",block:"start"});
+    }catch(error){
+      lockedThreshold=null;
+      $("threshold-slider").disabled=false;
+      document.querySelectorAll(".preset").forEach(b=>b.disabled=false);
+      $("test-eval-btn").textContent="Freeze threshold & evaluate final test set";
+      setText("status-text","Final evaluation unavailable");
+      $("error-box").textContent="Could not evaluate the final test set. Check the service and try again.";
+      $("error-box").style.display="block";
+      console.error(error);
+    }finally{
+      $("test-eval-btn").disabled=false;
+    }
+  }
+  function exportCSV(){
+    if(!data)return;
+    const threshold=Number($("threshold-slider").value), m=calc(threshold);
+    const rows=[
+      ["ML Classification Threshold Tuning — Run Summary"],
+      ["Dataset",data.dataset.name],
+      ["Model",data.model.name],
+      ["Positive class","Malignant"],
+      ["Threshold selected on validation",threshold.toFixed(2)],
+      ["Validation samples",m.total],
+      ["TP",m.tp],["TN",m.tn],["FP",m.fp],["FN",m.fn],
+      ["Accuracy",m.accuracy],["Precision",m.precision],["Recall / Sensitivity",m.recall],
+      ["F1-score",m.f1],["Specificity",m.specificity],["Validation ROC-AUC",data.model.validationRocAuc],
+    ];
+    if(testEvaluation){
+      rows.push([],["FINAL HELD-OUT TEST — selected threshold",lockedThreshold.toFixed(2)],
+        ["Test samples",testEvaluation.total],["Test TP",testEvaluation.tp],["Test TN",testEvaluation.tn],
+        ["Test FP",testEvaluation.fp],["Test FN",testEvaluation.fn],["Test accuracy",testEvaluation.accuracy],
+        ["Test precision",testEvaluation.precision],["Test recall",testEvaluation.recall],["Test F1-score",testEvaluation.f1],
+        ["Test specificity",testEvaluation.specificity],["Test ROC-AUC",testEvaluation.rocAuc]);
+    }
+    rows.push([],["Validation ID","Actual class","Predicted class","Malignant probability","Correct"]);
+    data.cases.forEach(c=>{
+      const pred=c.malignantProbability>=threshold?1:0;
+      rows.push([c.id,c.actual===1?"Malignant":"Benign",pred===1?"Malignant":"Benign",c.malignantProbability.toFixed(6),pred===c.actual?"Yes":"No"]);
+    });
+    const csv=rows.map(row=>row.map(v=>{const s=String(v??"");return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(",")).join("\r\n");
+    const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+    const url=URL.createObjectURL(blob),a=document.createElement("a");
+    a.href=url;a.download="ml-threshold-results-"+threshold.toFixed(2)+".csv";
+    document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+  }
+  $("export-btn").addEventListener("click",exportCSV);
+  $("threshold-slider").addEventListener("input",update);
+  document.querySelectorAll(".preset").forEach(b=>b.addEventListener("click",()=>{if(lockedThreshold!==null)return;$("threshold-slider").value=b.dataset.threshold;update()}));
+  $("test-eval-btn").addEventListener("click",freezeAndEvaluate);
+  $("reset-btn").addEventListener("click",()=>{
+    $("threshold-slider").value=defaultThreshold;filter="all";lockedThreshold=null;testEvaluation=null;
+    $("threshold-slider").disabled=false;
+    document.querySelectorAll(".preset").forEach(b=>{b.disabled=false;b.classList.toggle("active",Number(b.dataset.threshold)===defaultThreshold)});
+    $("test-eval-btn").textContent="Freeze threshold & evaluate final test set";
+    $("test-panel").style.display="none";
+    setText("status-text","Trained model ready");
+    document.querySelectorAll("[data-filter]").forEach(b=>b.classList.toggle("active",b.dataset.filter==="all"));
+    update();
+  });
+  document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",()=>{filter=b.dataset.filter;document.querySelectorAll("[data-filter]").forEach(x=>x.classList.toggle("active",x===b));update()}));
+  document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".tab-content").forEach(x=>x.classList.toggle("active",x.id===b.dataset.tab))}));
+  document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>{const q=b.dataset.q;const siblings=document.querySelectorAll('[data-q="'+q+'"]');siblings.forEach(x=>x.classList.remove("active"));b.classList.add("active");const isRight=b.dataset.answer==="right";setText(q,isRight?"Correct. "+({q1:"Lowering the cut-off predicts more positive cases; recall often increases, but false positives may increase too.",q2:"Recall = TP / (TP + FN), the fraction of actual positives detected.",q3:"ROC-AUC measures score ranking across all possible cut-offs, so changing one cut-off does not change it."}[q]):"Not quite. Review the definition above and try again.");$(q).style.color=isRight?"var(--green)":"var(--amber)";}));
+  fetch("/api/data").then(r=>{if(!r.ok)throw new Error("Could not load model data");return r.json()}).then(d=>{
+    data=d;
+    setText("status-text","Trained model ready");
+    setText("dataset-name",d.dataset.name);
+    setText("sample-count",d.dataset.samples);
+    setText("train-count",d.dataset.trainSamples);
+    setText("validation-count",d.dataset.validationSamples);
+    setText("test-count",d.dataset.testSamples);
+    $("error-box").style.display="none";
+    update();
+  }).catch(err=>{$("error-box").style.display="block";setText("status-text","Model unavailable");console.error(err)});
+})();
+</script>
+</body>
+</html>
