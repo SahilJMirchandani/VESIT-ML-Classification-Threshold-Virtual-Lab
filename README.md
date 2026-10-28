@@ -14,6 +14,12 @@ A focused, interactive Machine Learning virtual lab aligned to the VESIT Compute
 | Batch | A |
 | Assessment | Machine Learning Virtual Lab CA |
 
+## Live demo
+
+- **Interactive lab:** https://vesit-ml-classification-threshold-lab.onrender.com
+- **Health endpoint:** https://vesit-ml-classification-threshold-lab.onrender.com/api/health
+- **Source code:** https://github.com/SahilJMirchandani/VESIT-ML-Classification-Threshold-Virtual-Lab
+
 ## Exact concept
 
 **Classification threshold tuning in Logistic Regression.** Students move a probability cut-off and inspect how it changes predicted class labels, confusion-matrix counts, accuracy, precision, recall (sensitivity), F1-score and specificity. ROC-AUC remains fixed for a trained model because its probability rankings do not change when only the decision threshold moves.
