@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: vesit-ml-threshold-virtual-lab
+    name: vesit-ml-classification-threshold-lab
     runtime: python
     plan: free
     region: singapore
