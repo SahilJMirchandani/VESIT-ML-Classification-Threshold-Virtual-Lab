@@ -44,6 +44,23 @@ def evaluate(cases: list[dict], threshold: float) -> dict[str, float | int]:
 
 
 class ModelInvariantTests(unittest.TestCase):
+    def test_source_is_published_wisconsin_dataset_not_synthetic_data(self) -> None:
+        # Confirm the app loads the published scikit-learn/UCI dataset and the
+        # familiar class distribution instead of building mock rows.
+        self.assertIn("UCI ML Breast Cancer Wisconsin (Diagnostic)", app.dataset.DESCR)
+        self.assertEqual(app.X.shape, (569, 30))
+        self.assertEqual(int((app.dataset.target == 0).sum()), 212)  # malignant in sklearn's dataset
+        self.assertEqual(int((app.dataset.target == 1).sum()), 357)  # benign in sklearn's dataset
+        self.assertEqual(
+            app.LAB_DATA["dataset"]["source"],
+            "UCI Machine Learning Repository; loaded via scikit-learn",
+        )
+        cases = app.LAB_DATA["cases"]
+        self.assertEqual(len(cases), 114)
+        self.assertTrue(all(c["id"] == f"VAL-{i + 1:03d}" for i, c in enumerate(cases)))
+        self.assertTrue(all(c["actual"] in (0, 1) for c in cases))
+        self.assertTrue(all(0.0 <= c["malignantProbability"] <= 1.0 for c in cases))
+
     def test_expected_dataset_and_split_sizes(self) -> None:
         meta = app.LAB_DATA["dataset"]
         self.assertEqual(meta["samples"], 569)
