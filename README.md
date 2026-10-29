@@ -4,15 +4,14 @@ A focused, interactive Machine Learning virtual lab aligned to the VESIT Compute
 
 ## Student details
 
-| Field | Details |
-|---|---|
-| Name | Sahil Mirchandani |
-| Roll No. | 37 |
-| Class | D12A |
-| Branch | CMPN (Computer Engineering) |
-| Year | T.E. (Third Year) |
-| Batch | A |
-| Assessment | Machine Learning Virtual Lab CA |
+| Team Member | Roll No. | Class | Batch | Branch | Year |
+|---|---:|---|---|---|---|
+| Sahil Mirchandani | 37 | D12A | A | CMPN (Computer Engineering) | T.E. (Third Year) |
+| Zaid Mulla | 41 | D12A | A | CMPN (Computer Engineering) | T.E. (Third Year) |
+| Malika Makhija | 31 | D12A | A | CMPN (Computer Engineering) | T.E. (Third Year) |
+| Palak Lund | 30 | D12A | A | CMPN (Computer Engineering) | T.E. (Third Year) |
+
+**Assessment:** Machine Learning Virtual Lab CA
 
 ## Live demo
 
